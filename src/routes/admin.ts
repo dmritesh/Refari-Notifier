@@ -76,11 +76,16 @@ export default async function adminRoutes(fastify: FastifyInstance) {
                 ...safeOrg
             } = (org as any);
 
+            // Construct the correct base URL for auth
+            const baseUrl = process.env.BASE_URL || `${request.protocol}://${request.hostname}`;
+
             return {
                 ...safeOrg,
-                auth_url: `${request.protocol}://${request.hostname}/auth/hubstaff?orgId=${org.id}`
+                auth_url: `${baseUrl}/auth/hubstaff?orgId=${org.id}`
             };
         } catch (error) {
+            request.log.error(error);
+            console.error('GET /admin/organizations/:id error:', error);
             reply.code(500).send({ error: 'Failed to fetch organization' });
         }
     });
