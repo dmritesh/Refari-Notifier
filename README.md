@@ -36,3 +36,4 @@ The service replicates the Zapier specific logic:
 2. **Unique Request**: A unique key is formed by `(org_id, hubstaff_user_id, hubstaff_task_id, bucket)`.
 3. If this key exists in `processed_events`, the action is skipped.
 # Refari-Notifier
+# Refari-Notifier
