@@ -76,7 +76,10 @@ export default async function adminRoutes(fastify: FastifyInstance) {
                 ...safeOrg
             } = (org as any);
 
-            return safeOrg;
+            return {
+                ...safeOrg,
+                auth_url: `${request.protocol}://${request.hostname}/auth/hubstaff?orgId=${org.id}`
+            };
         } catch (error) {
             reply.code(500).send({ error: 'Failed to fetch organization' });
         }

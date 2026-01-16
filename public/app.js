@@ -87,12 +87,43 @@ async function loadSettings() {
         const res = await fetch(`/admin/organizations/${currentOrgId}`);
         const org = await res.json();
 
+        // Add Hubstaff Auth Button
+        const formSection = document.querySelector('.form-actions');
+        let authBtn = document.getElementById('hubstaff-auth-btn');
+        if (!authBtn) {
+            authBtn = document.createElement('a');
+            authBtn.id = 'hubstaff-auth-btn';
+            authBtn.className = 'btn-test'; // Reusing style
+            authBtn.style.marginLeft = '10px';
+            authBtn.style.textDecoration = 'none';
+            authBtn.style.background = '#7a5af8';
+            authBtn.style.color = 'white';
+            formSection.appendChild(authBtn);
+        }
+
+        authBtn.href = org.auth_url;
+        authBtn.innerText = 'Connect Hubstaff';
+        authBtn.target = '_blank';
+
         // Fill form
         document.getElementById('is_active').checked = org.is_active;
         document.getElementById('notification_gap_minutes').value = org.notification_gap_minutes;
         document.getElementById('gitlab_project_path').value = org.gitlab_project_path || '';
         document.getElementById('gitlab_domain').value = org.gitlab_domain || 'gitlab.com';
         document.getElementById('freshdesk_domain').value = org.freshdesk_domain || '';
+
+        // Update badge
+        const statusBadge = document.getElementById('bot-status-badge');
+        const statusText = document.getElementById('bot-status-text');
+        if (org.is_active) {
+            statusBadge.style.color = 'var(--success)';
+            statusBadge.style.background = 'rgba(16, 185, 129, 0.1)';
+            statusText.innerText = 'Bot Online';
+        } else {
+            statusBadge.style.color = 'var(--danger)';
+            statusBadge.style.background = 'rgba(239, 68, 68, 0.1)';
+            statusText.innerText = 'Bot Paused';
+        }
 
         // Passwords stay empty for security
     } catch (err) {
