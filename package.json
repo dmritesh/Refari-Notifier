@@ -4,7 +4,7 @@
   "description": "Automation service strictly replicating Refari Zapier workflow",
   "main": "dist/app.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "npx prisma migrate deploy && node dist/app.js",
     "dev": "nodemon src/app.js",
     "build": "tsc",
     "worker": "node dist/worker/index.js",
