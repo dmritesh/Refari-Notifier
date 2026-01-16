@@ -81,6 +81,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
 
             return {
                 ...safeOrg,
+                is_hubstaff_connected: !!(org as any).hubstaff_access_token,
                 auth_url: `${baseUrl}/auth/hubstaff?orgId=${org.id}`
             };
         } catch (error) {
@@ -212,7 +213,12 @@ export default async function adminRoutes(fastify: FastifyInstance) {
             return { success: true, message: 'Notification sent', details: { subject: finalSubject, url: finalUrl } };
         } catch (error) {
             request.log.error(error);
-            reply.code(500).send({ error: 'Failed to send notification' });
+            console.error('Test Notification Trigger Failed:', error);
+            // Log specifically if decryption failed
+            if (error instanceof Error && error.message.includes('Malformed UTF-8')) {
+                console.error('Decryption failed. Check MASTER_ENCRYPTION_KEY or DB data.');
+            }
+            reply.code(500).send({ error: 'Failed to send notification: ' + (error instanceof Error ? error.message : 'Unknown error') });
         }
     });
 }

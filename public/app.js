@@ -114,9 +114,19 @@ async function loadSettings() {
             console.log('Auth button created and appended');
         }
 
-        authBtn.href = org.auth_url;
-        authBtn.innerText = 'Connect Hubstaff';
-        authBtn.target = '_blank';
+        if (org.is_hubstaff_connected) {
+            authBtn.innerText = 'Hubstaff Connected ✅';
+            authBtn.classList.add('btn-connected');
+            authBtn.style.background = '#10b981'; // Green
+            authBtn.style.pointerEvents = 'none'; // Disable click
+            authBtn.href = '#';
+        } else {
+            authBtn.href = org.auth_url;
+            authBtn.innerText = 'Connect Hubstaff';
+            authBtn.target = '_blank';
+            authBtn.style.background = '#7a5af8'; // Purple
+        }
+
         console.log('Auth button configured:', authBtn);
 
         // Fill form
