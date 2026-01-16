@@ -1,0 +1,2 @@
+-- Initial migration (baseline for existing database)
+-- This migration is empty because the database schema already exists

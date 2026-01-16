@@ -14,7 +14,7 @@ services:
       postgres:
         condition: service_healthy
 
-    command: npm start
+    command: sh -c "npx prisma db push --accept-data-loss && node dist/app.js"
 
   postgres:
     image: postgres:15-alpine
