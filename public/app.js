@@ -87,10 +87,22 @@ async function loadSettings() {
         const res = await fetch(`/admin/organizations/${currentOrgId}`);
         const org = await res.json();
 
+        console.log('Loaded org data:', org);
+        console.log('Auth URL:', org.auth_url);
+
         // Add Hubstaff Auth Button
         const formSection = document.querySelector('.form-actions');
+        console.log('Form section found:', formSection);
+
+        if (!formSection) {
+            console.error('ERROR: .form-actions not found!');
+            showToast('Failed to load settings UI', true);
+            return;
+        }
+
         let authBtn = document.getElementById('hubstaff-auth-btn');
         if (!authBtn) {
+            console.log('Creating new auth button...');
             authBtn = document.createElement('a');
             authBtn.id = 'hubstaff-auth-btn';
             authBtn.className = 'btn-test'; // Reusing style
@@ -99,11 +111,13 @@ async function loadSettings() {
             authBtn.style.background = '#7a5af8';
             authBtn.style.color = 'white';
             formSection.appendChild(authBtn);
+            console.log('Auth button created and appended');
         }
 
         authBtn.href = org.auth_url;
         authBtn.innerText = 'Connect Hubstaff';
         authBtn.target = '_blank';
+        console.log('Auth button configured:', authBtn);
 
         // Fill form
         document.getElementById('is_active').checked = org.is_active;
@@ -127,6 +141,7 @@ async function loadSettings() {
 
         // Passwords stay empty for security
     } catch (err) {
+        console.error('Error loading settings:', err);
         showToast('Failed to load settings', true);
     }
 }
