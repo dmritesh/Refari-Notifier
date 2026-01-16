@@ -35,3 +35,4 @@ The service replicates the Zapier specific logic:
 1. **Bucket Calculation**: `floor(current_timestamp / 7200)` (2-hour buckets).
 2. **Unique Request**: A unique key is formed by `(org_id, hubstaff_user_id, hubstaff_task_id, bucket)`.
 3. If this key exists in `processed_events`, the action is skipped.
+# Refari-Notifier
