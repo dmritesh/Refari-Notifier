@@ -17,6 +17,31 @@ interface CreateOrgBody {
 }
 
 export default async function adminRoutes(fastify: FastifyInstance) {
+    fastify.get('/admin/current-org', async (request, reply) => {
+        try {
+            // Find the first organization
+            let org = await prisma.organization.findFirst();
+
+            // If none exists, create a default one
+            if (!org) {
+                org = await (prisma.organization as any).create({
+                    data: {
+                        name: 'Refari Default',
+                        freshdesk_api_key: encrypt('placeholder'),
+                        freshdesk_domain: 'refari.freshdesk.com',
+                        slack_webhook_url: encrypt('placeholder'),
+                        is_active: true,
+                        notification_gap_minutes: 120
+                    }
+                });
+            }
+
+            return { id: org?.id };
+        } catch (error) {
+            request.log.error(error);
+            reply.code(500).send({ error: 'Failed to retrieve current organization' });
+        }
+    });
     fastify.get('/admin/events', async (request, reply) => {
         try {
             const events = await prisma.processedEvent.findMany({

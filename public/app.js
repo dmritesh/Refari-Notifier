@@ -1,5 +1,5 @@
 // App State
-let currentOrgId = 'e16dd40b-9b11-4bc7-a22f-cf77c9ef35d9'; // Default Refari ID
+let currentOrgId = null;
 let autoRefreshInterval;
 
 // DOM Elements
@@ -24,12 +24,24 @@ function showPage(pageId) {
     document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
 
     if (pageId === 'dashboard') loadDashboardData();
-    if (pageId === 'settings') loadSettings();
+    if (pageId === 'settings' && currentOrgId) loadSettings();
     if (pageId === 'logs') loadFullLogs();
 }
 
 // Initial Load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Fetch valid Org ID from server
+        const res = await fetch('/admin/current-org');
+        const data = await res.json();
+        if (data.id) {
+            currentOrgId = data.id;
+            console.log('Connected to Org:', currentOrgId);
+        }
+    } catch (e) {
+        console.error('Could not fetch current org:', e);
+    }
+
     loadDashboardData();
     startAutoRefresh();
 });
