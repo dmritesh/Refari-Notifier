@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refari Notifier | Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="https://www.refari.co/favicon-32x32.png" type="image/png">
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+
+<body>
+    <div class="glass-bg"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://www.refari.co/favicon-32x32.png" alt="Refari Logo" class="logo">
+            <span class="brand">Refari Notifier</span>
+        </div>
+        <ul class="nav-links">
+            <li class="active" data-page="dashboard"><i class="icon">📊</i> Dashboard</li>
+            <li data-page="settings"><i class="icon">⚙️</i> Settings</li>
+            <li data-page="logs"><i class="icon">📜</i> Activity Logs</li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="status-badge" id="bot-status-badge">
+                <span class="status-dot"></span>
+                <span id="bot-status-text">Bot Online</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page active">
+            <header class="page-header">
+                <h1>Overview</h1>
+                <p>Real-time status of your Hubstaff automation</p>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Notifications Today</h3>
+                    <p class="stat-value" id="stat-today">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Team Check</h3>
+                    <p class="stat-value" id="stat-active">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>System Uptime</h3>
+                    <p class="stat-value">100%</p>
+                </div>
+            </div>
+
+            <div class="recent-activity">
+                <div class="section-header">
+                    <h2>Recent Notifications</h2>
+                    <button class="btn-refresh" id="refresh-logs">Refresh</button>
+                </div>
+                <div class="activity-list" id="recent-activity-list">
+                    <!-- Loaded via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Page -->
+        <section id="settings" class="page">
+            <header class="page-header">
+                <h1>Configuration</h1>
+                <p>Manage API keys and notification rules</p>
+            </header>
+
+            <form id="settings-form" class="settings-form">
+                <div class="form-group">
+                    <label>Bot Status</label>
+                    <div class="toggle-container">
+                        <span>Active</span>
+                        <input type="checkbox" id="is_active" class="toggle-input">
+                        <label for="is_active" class="toggle-label"></label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Deduplication Settings</h3>
+                    <div class="form-group">
+                        <label>Notification Gap (Minutes)</label>
+                        <input type="number" id="notification_gap_minutes" value="120">
+                        <small>Time to wait before notifying for the same task again.</small>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>GitLab Settings</h3>
+                    <div class="form-group">
+                        <label>Project Path</label>
+                        <input type="text" id="gitlab_project_path" placeholder="e.g. referrer_io/widget">
+                    </div>
+                    <div class="form-group">
+                        <label>GitLab Domain</label>
+                        <input type="text" id="gitlab_domain" value="gitlab.com">
+                    </div>
+                    <div class="form-group">
+                        <label>API Key (Encrypted)</label>
+                        <input type="password" id="gitlab_api_key" placeholder="••••••••••••••••">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Freshdesk Settings</h3>
+                    <div class="form-group">
+                        <label>Domain</label>
+                        <input type="text" id="freshdesk_domain" placeholder="e.g. refari.freshdesk.com">
+                    </div>
+                    <div class="form-group">
+                        <label>API Key (Encrypted)</label>
+                        <input type="password" id="freshdesk_api_key" placeholder="••••••••••••••••">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Slack Settings</h3>
+                    <div class="form-group">
+                        <label>Webhook URL (Encrypted)</label>
+                        <input type="password" id="slack_webhook_url" placeholder="••••••••••••••••">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">Save Settings</button>
+                    <button type="button" class="btn-test" id="test-notify-btn">Send Test Message</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Logs Page -->
+        <section id="logs" class="page">
+            <header class="page-header">
+                <h1>Full Logs</h1>
+                <p>View the history of all processed events</p>
+            </header>
+            <div class="table-container">
+                <table id="logs-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>User ID</th>
+                            <th>Task ID</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

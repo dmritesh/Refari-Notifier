@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id                  String   @id @default(uuid())
+  name                String
+  // OAuth secrets
+  hubstaff_access_token  String? // Encrypted
+  hubstaff_refresh_token String? // Encrypted
+  hubstaff_token_expires_at DateTime?
+  hubstaff_org_id       String?
+  
+  freshdesk_api_key   String // Encrypted
+  freshdesk_domain    String
+  slack_webhook_url   String // Encrypted
+  
+  gitlab_domain       String?
+  gitlab_project_path String?
+  gitlab_api_key      String? // Encrypted
+  
+  // Automation settings
+  is_active           Boolean  @default(true)
+  notification_gap_minutes Int @default(120)
+
+  // Polling state
+  last_checked_at     DateTime?
+
+  processed_events    ProcessedEvent[]
+  user_sessions       UserSession[]
+  
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+}
+
+model UserSession {
+  id                String   @id @default(uuid())
+  org_id            String
+  organization      Organization @relation(fields: [org_id], references: [id])
+  
+  hubstaff_user_id  Int
+  last_task_id      Int
+  last_activity_at  DateTime
+  notified_at       DateTime?
+  
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@unique([org_id, hubstaff_user_id])
+}
+
+model ProcessedEvent {
+  id                    String   @id @default(uuid())
+  org_id                String
+  organization          Organization @relation(fields: [org_id], references: [id])
+  
+  hubstaff_user_id      Int
+  hubstaff_task_id      Int
+  bucket                Int
+  hubstaff_time_entry_id String?
+  
+  created_at            DateTime @default(now())
+
+  @@unique([org_id, hubstaff_user_id, hubstaff_task_id, bucket])
+  @@index([org_id, created_at])
+}
