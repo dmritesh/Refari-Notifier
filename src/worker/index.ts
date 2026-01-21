@@ -130,6 +130,13 @@ async function processActivity(
         }
     });
 
+    // NEW: Skip activities older than current session
+    // This prevents duplicate notifications when old tasks reappear in the 45-min overlap window
+    if (session && activityTime.getTime() < session.last_activity_at.getTime()) {
+        console.log(`Activity ${activity.id} is older than current session (${activityTime} < ${session.last_activity_at}). Skipping.`);
+        return;
+    }
+
     let shouldNotify = false;
 
     if (!session) {
