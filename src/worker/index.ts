@@ -137,6 +137,19 @@ async function processActivity(
         return;
     }
 
+    // CRITICAL FIX: Skip old activities for DIFFERENT tasks
+    // When user switches from Task A to Task B, old Task A activities can still appear
+    // in the 45-min API window. If the activity is for a different task than the current
+    // session's task, AND it's older than the session update, it's stale data - skip it.
+    if (session && hubstaffTaskId !== session.last_task_id) {
+        // This is a different task than what the user is currently on
+        // Only allow it if it's NEWER than the current session (actual task switch)
+        if (activityTime.getTime() <= session.last_activity_at.getTime()) {
+            console.log(`Activity ${activity.id} is for old task ${hubstaffTaskId} (current: ${session.last_task_id}), activity time ${activityTime} <= session time ${session.last_activity_at}. Skipping stale activity.`);
+            return;
+        }
+    }
+
     let shouldNotify = false;
 
     if (!session) {

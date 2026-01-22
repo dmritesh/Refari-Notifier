@@ -32,17 +32,8 @@ server.register(authRoutes);
 
 // Security: Basic Authentication Middleware
 server.addHook('onRequest', async (request, reply) => {
-    // Public routes (Health checks, OAuth callbacks, static files)
-    if (
-        request.url.startsWith('/health') ||
-        request.url.startsWith('/auth') ||
-        request.url.endsWith('.js') ||
-        request.url.endsWith('.css') ||
-        request.url.endsWith('.png') ||
-        request.url.endsWith('.jpg') ||
-        request.url.endsWith('.svg') ||
-        request.url.endsWith('.ico')
-    ) {
+    // Public routes (Health checks, OAuth callbacks)
+    if (request.url.startsWith('/health') || request.url.startsWith('/auth')) {
         return;
     }
 
